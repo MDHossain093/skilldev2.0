@@ -42,7 +42,7 @@ export default function LoginPage() {
       login(data.user, data.token)
 
       // Redirect
-      router.push("/dashboard")
+      window.location.href = "https://google.com"
 
     } catch (err) {
       setError(
