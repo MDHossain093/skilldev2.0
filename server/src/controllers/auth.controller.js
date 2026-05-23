@@ -26,9 +26,11 @@ const registerUser = async (req, res) => {
       }
     })
 
+    const { password: _password, ...safeUser } = user
+
     res.status(201).json({
       message: "User registered successfully",
-      user
+      user: safeUser
     })
 
   } catch (error) {
@@ -69,9 +71,11 @@ const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     )
 
+    const { password: _password, ...safeUser } = user
+
     res.status(200).json({
       token,
-      user
+      user: safeUser
     })
 
   } catch (error) {

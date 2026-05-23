@@ -41,9 +41,13 @@ export default function LoginPage() {
 
       login(data.user, data.token)
 
-      // Redirect
-      window.location.href = "https://google.com"
+      router.push("/profile")
 
+      setTimeout(() => {
+        if (window.location.pathname !== "/profile") {
+          window.location.href = "/profile"
+        }
+      }, 300)
     } catch (err) {
       setError(
         err.response?.data?.message ||
