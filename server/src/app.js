@@ -1,6 +1,8 @@
 import express from "express"
 import cors from "cors"
+
 import authRoutes from "./routes/auth.route.js"
+import skillRoutes from "./routes/skill.route.js"
 
 const app = express()
 
@@ -11,11 +13,14 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
 }
 
+// Middleware FIRST
 app.use(cors(corsOptions))
-
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
+// Routes AFTER middleware
 app.use("/api/auth", authRoutes)
+app.use("/api/skills", skillRoutes)
 
 app.get("/", (req, res) => {
   res.send("SkillDev API Running")

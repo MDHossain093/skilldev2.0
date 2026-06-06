@@ -8,15 +8,64 @@ datasource db {
 }
 
 model User {
-  id          String    @id @default(cuid())
-  name        String
-  email       String    @unique
-  password    String
-  image       String?
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile   Profile?
+
+  skills    UserSkill[]
+  projects  Project[]
+}
+
+model Profile {
+  id          String   @id @default(cuid())
+
   bio         String?
   github      String?
   linkedin    String?
+  image       String?
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Skill {
+  id      String      @id @default(cuid())
+  name    String      @unique
+
+  users   UserSkill[]
+}
+
+model UserSkill {
+  id      String @id @default(cuid())
+
+  userId  String
+  skillId String
+
+  user    User  @relation(fields: [userId], references: [id])
+  skill   Skill @relation(fields: [skillId], references: [id])
+
+  @@unique([userId, skillId])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+
+  title       String
+  description String
+  githubUrl   String?
+
+  userId      String
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  createdAt   DateTime @default(now())
 }
