@@ -3,6 +3,7 @@ import cors from "cors"
 
 import authRoutes from "./routes/auth.route.js"
 import skillRoutes from "./routes/skill.route.js"
+import projectRoutes from "./routes/project.route.js"
 
 const app = express()
 
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 // Routes AFTER middleware
 app.use("/api/auth", authRoutes)
 app.use("/api/skills", skillRoutes)
-
+app.use("/api/projects", projectRoutes)
 app.get("/", (req, res) => {
   res.send("SkillDev API Running")
 })

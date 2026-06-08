@@ -61,7 +61,12 @@ model Project {
 
   title       String
   description String
+
   githubUrl   String?
+
+  liveUrl     String?
+
+  techStack   String?
 
   userId      String
 

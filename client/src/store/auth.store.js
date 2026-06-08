@@ -12,6 +12,8 @@ const useAuthStore = create(
       login: (user, token) => {
         if (typeof window !== "undefined") {
           document.cookie = `token=${token}; Path=/; Max-Age=${ONE_WEEK_SECONDS}; SameSite=Lax`
+          localStorage.setItem("token", token)
+          localStorage.setItem("user", JSON.stringify(user))
         }
 
         set({
@@ -23,6 +25,8 @@ const useAuthStore = create(
       logout: () => {
         if (typeof window !== "undefined") {
           document.cookie = "token=; Path=/; Max-Age=0; SameSite=Lax"
+          localStorage.removeItem("token")
+          localStorage.removeItem("user")
         }
 
         set({
