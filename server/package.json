@@ -12,6 +12,8 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "@google/genai": "^2.11.0",
+    "@langchain/google-genai": "^2.1.31",
     "@langchain/openai": "^1.4.5",
     "@prisma/client": "^6.19.3",
     "ai": "^6.0.175",

@@ -1,4 +1,4 @@
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai"
+import { GoogleGenAI } from "@google/genai"
 
 export const getLlm = () => {
   const apiKey =
@@ -9,9 +9,16 @@ export const getLlm = () => {
     return null
   }
 
-  return new ChatGoogleGenerativeAI({
-    model: "gemini-2.0-flash",
-    apiKey,
-    temperature: 0.7,
-  })
+  const ai = new GoogleGenAI({ apiKey })
+
+  return {
+    invoke: async (input) => {
+      const interaction = await ai.interactions.create({
+        model: "gemini-3.5-flash",
+        input,
+      })
+
+      return { content: interaction.output_text }
+    },
+  }
 }

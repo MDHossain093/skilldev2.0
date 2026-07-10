@@ -41,8 +41,8 @@ export default function TeamMatchPage() {
     if (user) {
       Promise.all([
         getProfile(user.id).then(setProfile),
-        getSkills().then(setSkills),
-        getProjects().then(setProjects),
+        getSkills(user.id).then(setSkills),
+        getProjects(user.id).then(setProjects),
       ]).then(() => setDataLoaded(true))
     }
   }, [user])

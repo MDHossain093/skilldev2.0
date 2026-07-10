@@ -2,8 +2,11 @@ import axios from "axios"
 
 const API = "http://localhost:5000/api/projects"
 
-export const getProjects = async () => {
-  const response = await axios.get(API)
+// Pass a userId to get only that user's projects.
+export const getProjects = async (userId) => {
+  const response = await axios.get(API, {
+    params: userId ? { userId } : {},
+  })
   return response.data
 }
 
@@ -12,7 +15,9 @@ export const createProject = async (data) => {
   return response.data
 }
 
-export const deleteProject = async (id) => {
-  const response = await axios.delete(`${API}/${id}`)
+export const deleteProject = async (id, userId) => {
+  const response = await axios.delete(`${API}/${id}`, {
+    params: userId ? { userId } : {},
+  })
   return response.data
 }

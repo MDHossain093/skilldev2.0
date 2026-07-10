@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Code2, Plus, X, Loader2 } from "lucide-react"
 import { getSkills, createSkill, deleteSkill } from "@/services/skill.service"
+import useAuthStore from "@/store/auth.store"
 import AppShell from "@/components/AppShell"
 
 const SKILL_COLORS = [
@@ -17,6 +18,7 @@ const SKILL_COLORS = [
 ]
 
 export default function SkillsPage() {
+  const user = useAuthStore((s) => s.user)
   const [skills, setSkills] = useState([])
   const [skillName, setSkillName] = useState("")
   const [loading, setLoading] = useState(true)
@@ -25,19 +27,20 @@ export default function SkillsPage() {
   const [error, setError] = useState("")
 
   const fetchSkills = async () => {
-    try { const data = await getSkills(); setSkills(data) }
+    if (!user) return
+    try { const data = await getSkills(user.id); setSkills(data) }
     catch { setError("Failed to load skills") }
     finally { setLoading(false) }
   }
 
-  useEffect(() => { fetchSkills() }, [])
+  useEffect(() => { fetchSkills() }, [user])
 
   const handleAdd = async (e) => {
     e.preventDefault()
-    if (!skillName.trim()) return
+    if (!skillName.trim() || !user) return
     try {
       setAdding(true); setError("")
-      await createSkill({ name: skillName.trim() })
+      await createSkill({ name: skillName.trim(), userId: user.id })
       setSkillName("")
       fetchSkills()
     } catch (err) {
@@ -48,7 +51,7 @@ export default function SkillsPage() {
   const handleDelete = async (id) => {
     try {
       setDeletingId(id)
-      await deleteSkill(id)
+      await deleteSkill(id, user.id)
       setSkills((prev) => prev.filter((s) => s.id !== id))
     } catch { setError("Failed to delete skill") }
     finally { setDeletingId(null) }

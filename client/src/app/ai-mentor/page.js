@@ -83,13 +83,25 @@ export default function AIPage() {
     if (user) {
       Promise.all([
         getProfile(user.id).then(setProfile),
-        getSkills().then(setSkills),
-        getProjects().then(setProjects),
+        getSkills(user.id).then(setSkills),
+        getProjects(user.id).then(setProjects),
       ]).then(() => setDataReady(true))
     }
   }, [user])
 
+  // Cards that can't produce a meaningful result without a target role.
+  const roleRequired = ["skillGap", "roadmap", "timeline"]
+
   const run = async (key, fn) => {
+    if (roleRequired.includes(key) && !targetRole.trim()) {
+      setErrors((e) => ({
+        ...e,
+        [key]: "Please enter a target role above first.",
+      }))
+      document.getElementById("target-role-input")?.focus()
+      return
+    }
+
     setLoadings((l) => ({ ...l, [key]: true }))
     setErrors((e) => ({ ...e, [key]: null }))
     try {
@@ -131,7 +143,7 @@ export default function AIPage() {
         <div className="rounded-2xl border border-border/50 bg-card p-5">
           <label className="text-sm font-semibold block mb-2">
             🎯 Target Role{" "}
-            <span className="font-normal text-muted-foreground text-xs">(optional — used for Roadmap, Timeline, Skill Gap)</span>
+            <span className="font-normal text-muted-foreground text-xs">(required for Roadmap, Timeline, Skill Gap)</span>
           </label>
           <input
             id="target-role-input"

@@ -28,8 +28,8 @@ export default function DashboardPage() {
   useEffect(() => {
     if (user) {
       Promise.all([
-        getSkills().then(setSkills),
-        getProjects().then(setProjects),
+        getSkills(user.id).then(setSkills),
+        getProjects(user.id).then(setProjects),
         getProfile(user.id).then(setProfile),
       ]).finally(() => setLoading(false))
     }

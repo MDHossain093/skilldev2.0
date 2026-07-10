@@ -23,8 +23,8 @@ export default function ProfilePage() {
     if (!user) { router.push("/login"); return }
     Promise.all([
       getProfile(user.id).then(setProfile),
-      getSkills().then(setSkills),
-      getProjects().then(setProjects),
+      getSkills(user.id).then(setSkills),
+      getProjects(user.id).then(setProjects),
     ]).finally(() => setLoading(false))
   }, [user])
 
@@ -34,7 +34,7 @@ export default function ProfilePage() {
     ? Math.round([profile.bio, profile.github, profile.linkedin, profile.portfolio, profile.location].filter(Boolean).length / 5 * 100)
     : 0
 
-  const initials = user.name?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+  const initials = user.name?.charAt(0).toUpperCase()
 
   return (
     <AppShell>

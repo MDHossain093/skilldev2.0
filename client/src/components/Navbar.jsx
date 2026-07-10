@@ -23,6 +23,7 @@ const navItems = [
   { label: "Skills", href: "/skills", icon: Code2 },
   { label: "Projects", href: "/projects", icon: FolderGit2 },
   { label: "AI Mentor", href: "/ai-mentor", icon: BrainCircuit },
+  { label: "Developers", href: "/developers", icon: Users },
   { label: "Search", href: "/search", icon: Search },
   { label: "Team Match", href: "/team-match", icon: Users },
 ]

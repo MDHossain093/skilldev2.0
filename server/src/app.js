@@ -4,6 +4,9 @@ import cors from "cors"
 import authRoutes from "./routes/auth.route.js"
 import skillRoutes from "./routes/skill.route.js"
 import projectRoutes from "./routes/project.route.js"
+import aiRoutes from "./routes/ai.route.js"
+import userRoutes from "./routes/user.route.js"
+import profileRoutes from "./routes/profile.route.js"
 
 const app = express()
 
@@ -23,6 +26,9 @@ app.use(express.urlencoded({ extended: true }))
 app.use("/api/auth", authRoutes)
 app.use("/api/skills", skillRoutes)
 app.use("/api/projects", projectRoutes)
+app.use("/api/ai", aiRoutes)
+app.use("/api/users", userRoutes)
+app.use("/api/profile", profileRoutes)
 app.get("/", (req, res) => {
   res.send("SkillDev API Running")
 })

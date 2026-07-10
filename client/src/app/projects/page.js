@@ -19,11 +19,12 @@ export default function ProjectsPage() {
   const [formData, setFormData] = useState({ title: "", description: "", githubUrl: "", liveUrl: "", techStack: "" })
 
   const fetchProjects = async () => {
-    try { const data = await getProjects(); setProjects(data) }
+    if (!authUser) return
+    try { const data = await getProjects(authUser.id); setProjects(data) }
     finally { setLoading(false) }
   }
 
-  useEffect(() => { fetchProjects() }, [])
+  useEffect(() => { fetchProjects() }, [authUser])
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
 
@@ -43,7 +44,7 @@ export default function ProjectsPage() {
   }
 
   const handleDelete = async (id) => {
-    try { setDeletingId(id); await deleteProject(id); setProjects((prev) => prev.filter((p) => p.id !== id)) }
+    try { setDeletingId(id); await deleteProject(id, authUser?.id); setProjects((prev) => prev.filter((p) => p.id !== id)) }
     finally { setDeletingId(null) }
   }
 
