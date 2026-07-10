@@ -17,6 +17,7 @@ import {
   Zap,
 } from "lucide-react"
 import useAuthStore from "@/store/auth.store"
+import ThemeToggle from "@/components/ThemeToggle"
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -46,13 +47,14 @@ export default function Navbar() {
     <>
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full w-64 z-50 border-r border-border/50 bg-card/80 backdrop-blur-xl">
-        <div className="p-6 border-b border-border/50">
+        <div className="p-6 border-b border-border/50 flex items-center justify-between gap-2">
           <Link href="/dashboard" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center">
               <Zap className="w-4 h-4 text-primary" />
             </div>
             <span className="text-lg font-bold gradient-text">SkillDev</span>
           </Link>
+          <ThemeToggle />
         </div>
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map(({ label, href, icon: Icon }) => {
@@ -109,12 +111,15 @@ export default function Navbar() {
           </div>
           <span className="text-base font-bold gradient-text">SkillDev</span>
         </Link>
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-        >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </header>
 
       {/* Mobile Drawer */}
