@@ -31,3 +31,8 @@ export const getTimeline = async (payload) => {
   const response = await axios.post(`${API}/timeline`, payload)
   return response.data
 }
+
+export const getTeamMatch = async (payload) => {
+  const response = await axios.post(`${API}/team-match`, payload)
+  return response.data
+}

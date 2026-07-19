@@ -6,6 +6,7 @@ import {
   roadmap,
   careerAdvice,
   timeline,
+  teamMatch,
 } from "../controllers/ai.controller.js"
 
 const router = express.Router()
@@ -16,5 +17,6 @@ router.post("/recommended-skills", recommendedSkills)
 router.post("/roadmap", roadmap)
 router.post("/career-advice", careerAdvice)
 router.post("/timeline", timeline)
+router.post("/team-match", teamMatch)
 
 export default router

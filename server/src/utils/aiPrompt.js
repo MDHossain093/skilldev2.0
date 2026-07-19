@@ -38,5 +38,10 @@ IMPORTANT: Return ONLY a raw JSON object. Do NOT wrap it in markdown code blocks
     raw = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "").trim()
   }
 
-  return JSON.parse(raw)
+  try {
+    return JSON.parse(raw)
+  } catch {
+    // Don't leak raw parse errors ("Unexpected token...") to the client.
+    throw new Error("The AI returned an unexpected response. Please try again.")
+  }
 }
