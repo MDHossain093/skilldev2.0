@@ -17,3 +17,12 @@ build
 
 # logs
 npm-debug.log*
+
+# ai tooling (local embeddings cache)
+.puku/
+
+# runtime / probe logs
+*.err
+*.log
+server/server.out
+server/server.err
