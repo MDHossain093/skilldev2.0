@@ -61,7 +61,9 @@ export default function ProjectsPage() {
             <p className="text-muted-foreground mt-1">Showcase your work and side projects</p>
           </div>
           <button id="toggle-project-form" onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all">
-            {showForm ? <><ChevronUp className="w-4 h-4" /> Cancel</> : <><Plus className="w-4 h-4" /> Add Project</>}
+            <span className="flex items-center gap-2">
+              {showForm ? <><ChevronUp className="w-4 h-4" /> Cancel</> : <><Plus className="w-4 h-4" /> Add Project</>}
+            </span>
           </button>
         </div>
 
@@ -95,8 +97,10 @@ export default function ProjectsPage() {
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
               <button id="create-project-btn" type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-all">
-                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                {saving ? "Creating..." : "Create Project"}
+                <span className="flex items-center gap-2">
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                  <span>{saving ? "Creating..." : "Create Project"}</span>
+                </span>
               </button>
             </form>
           </div>
@@ -116,7 +120,9 @@ export default function ProjectsPage() {
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <h2 className="text-base font-bold leading-tight">{project.title}</h2>
                   <button onClick={() => handleDelete(project.id)} disabled={deletingId === project.id} className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all opacity-0 group-hover:opacity-100" title="Delete project">
-                    {deletingId === project.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    <span className="flex items-center justify-center w-4 h-4">
+                      {deletingId === project.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    </span>
                   </button>
                 </div>
                 <p className="text-muted-foreground text-sm leading-relaxed flex-1 mb-4">{project.description}</p>

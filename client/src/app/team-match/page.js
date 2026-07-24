@@ -113,7 +113,9 @@ export default function TeamMatchPage() {
             disabled={loading || !dataLoaded || skills.length === 0}
             className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold text-base hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-2xl hover:shadow-primary/25 hover:-translate-y-0.5"
           >
-            {loading ? <><Loader2 className="w-5 h-5 animate-spin" />Analyzing your profile...</> : <><BrainCircuit className="w-5 h-5" />Find My Ideal Team<Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" /></>}
+            <span className="inline-flex items-center gap-3">
+              {loading ? <><Loader2 className="w-5 h-5 animate-spin" />Analyzing your profile...</> : <><BrainCircuit className="w-5 h-5" />Find My Ideal Team<Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" /></>}
+            </span>
           </button>
           <p className="text-muted-foreground text-xs mt-3">AI matches you with real developers whose skills complement yours</p>
         </div>

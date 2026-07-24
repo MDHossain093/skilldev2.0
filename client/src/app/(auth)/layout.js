@@ -36,7 +36,10 @@ export default function AuthLayout({ children }) {
     )
   }
 
-  if (token) return null
+  // Do not return null here — that would replace the root with nothing and
+  // trigger React 19's "insertBefore" NotFoundError once the redirect fires.
+  // Render an empty wrapper so the root DOM node stays stable.
+  if (token) return <div data-auth-redirect="" hidden />
 
   return <>{children}</>
 }

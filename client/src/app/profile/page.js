@@ -28,7 +28,16 @@ export default function ProfilePage() {
     ]).finally(() => setLoading(false))
   }, [user, router])
 
-  if (!user) return null
+  // Keep the root mounted with a stable placeholder while we wait for auth.
+// Returning null here causes React 19 + DevTools to race during the
+// null → full-tree swap, throwing `insertBefore` NotFoundError.
+  if (!user) {
+    return (
+      <AppShell>
+        <div data-profile-placeholder="" hidden />
+      </AppShell>
+    )
+  }
 
   const completion = profile
     ? Math.round([profile.bio, profile.github, profile.linkedin, profile.portfolio, profile.location].filter(Boolean).length / 5 * 100)

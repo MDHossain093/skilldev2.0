@@ -42,11 +42,20 @@ export default function SkillsPage() {
   const handleAdd = async (e) => {
     e.preventDefault()
     if (!skillName.trim() || !user) return
+    const trimmed = skillName.trim()
     try {
       setAdding(true); setError("")
-      await createSkill({ name: skillName.trim(), userId: user.id })
+      const created = await createSkill({ name: trimmed, userId: user.id })
+      // Append optimistically; fall back to refetch if the API doesn't return the row.
+      if (created && (created.id || created.name)) {
+        setSkills((prev) => {
+          if (prev.some((s) => s.id === created.id)) return prev
+          return [...prev, created]
+        })
+      } else {
+        await fetchSkills()
+      }
       setSkillName("")
-      fetchSkills()
     } catch (err) {
       setError(err.response?.data?.message || "Failed to add skill")
     } finally { setAdding(false) }
@@ -81,8 +90,24 @@ export default function SkillsPage() {
               className="flex-1 px-4 py-2.5 rounded-xl bg-secondary/60 border border-border/60 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
             />
             <button id="skill-add-btn" type="submit" disabled={adding || !skillName.trim()} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all">
-              {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-              Add
+              {/*
+                Wrap the conditional icon/label in a stable <span> so React
+                never has to swap between a single element and a fragment
+                with two children. Swapping between those two tree shapes is
+                what triggers the React 19 "insertBefore on Node"
+                NotFoundError when the DevTools fiber walker tries to
+                instrument the button during the add action.
+              */}
+              <span className="flex items-center gap-2">
+                {adding ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4" />
+                    <span>Add</span>
+                  </>
+                )}
+              </span>
             </button>
           </form>
           {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
@@ -93,25 +118,37 @@ export default function SkillsPage() {
             Your Tech Stack
             {!loading && <span className="ml-2 text-muted-foreground font-normal text-sm">({skills.length} {skills.length === 1 ? "skill" : "skills"})</span>}
           </h2>
-          {loading ? (
-            <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /></div>
-          ) : skills.length === 0 ? (
-            <div className="text-center py-12">
-              <Code2 className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm">No skills added yet. Add your first skill above!</p>
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-2.5">
-              {skills.map((skill, i) => {
-                const colorClass = SKILL_COLORS[i % SKILL_COLORS.length]
-                return (
-                  <button key={skill.id} onClick={() => handleDelete(skill.id)} disabled={deletingId === skill.id} className={`group flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95 ${colorClass}`} title={`Remove ${skill.name}`}>
-                    {deletingId === skill.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <>{skill.name}<X className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></>}
-                  </button>
-                )
-              })}
-            </div>
-          )}
+          {/*
+            Keep the conditional subtree wrapped in a single stable container
+            so React doesn't have to swap entirely different root types
+            (loader div vs. content div) on every state change. This avoids
+            the React 19 "insertBefore on Node" NotFoundError that surfaces
+            when the React Compiler / DevTools fiber walker hits a stale
+            Suspense marker mid-commit.
+          */}
+          <div className="skills-list-region min-h-[80px]">
+            {loading ? (
+              <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /></div>
+            ) : skills.length === 0 ? (
+              <div className="text-center py-12">
+                <Code2 className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-muted-foreground text-sm">No skills added yet. Add your first skill above!</p>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2.5">
+                {skills.map((skill, i) => {
+                  const colorClass = SKILL_COLORS[i % SKILL_COLORS.length]
+                  return (
+                    <button key={skill.id} onClick={() => handleDelete(skill.id)} disabled={deletingId === skill.id} className={`group flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95 ${colorClass}`} title={`Remove ${skill.name}`}>
+                      <span className="flex items-center gap-2">
+                        {deletingId === skill.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <>{skill.name}<X className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></>}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </AppShell>

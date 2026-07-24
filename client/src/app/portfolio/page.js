@@ -182,7 +182,16 @@ export default function PortfolioEditorPage() {
     await publish(user.id, next)
   }
 
-  if (!hydrated || !user) return null
+  // Keep the root mounted with a stable placeholder while we wait for hydration
+  // and auth. Returning null here causes React 19 + DevTools to race during the
+  // null → full-tree swap, throwing `insertBefore` NotFoundError.
+  if (!hydrated || !user) {
+    return (
+      <AppShell>
+        <div data-portfolio-placeholder="" hidden />
+      </AppShell>
+    )
+  }
 
   const publicUrl =
     form.username && form.isPublished
@@ -214,12 +223,14 @@ export default function PortfolioEditorPage() {
               disabled={saving || loading}
               size="sm"
             >
-              {saving ? (
-                <Loader2 className="size-3.5 animate-spin" />
-              ) : (
-                <Save className="size-3.5" />
-              )}
-              {saving ? "Saving…" : "Save"}
+              <span className="inline-flex items-center gap-1.5">
+                {saving ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <Save className="size-3.5" />
+                )}
+                <span>{saving ? "Saving…" : "Save"}</span>
+              </span>
             </Button>
           </div>
         </div>

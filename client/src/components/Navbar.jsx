@@ -41,7 +41,13 @@ export default function Navbar() {
     setMobileOpen(false)
   }
 
-  if (!user) return null
+  // Intentionally do NOT return null before the user is hydrated. Returning a
+  // different root element on the second render (null → fragment) is what
+  // triggers React 19's "insertBefore on Node" NotFoundError once the React
+  // Compiler / DevTools try to walk the fiber tree. Render an empty fragment
+  // with a stable, hidden placeholder div so the DOM structure is consistent
+  // across SSR, hydration, and post-rehydration re-renders.
+  if (!user) return <div data-navbar-placeholder="" hidden />
 
   return (
     <>
