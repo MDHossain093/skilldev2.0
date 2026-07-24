@@ -10,8 +10,25 @@ import profileRoutes from "./routes/profile.route.js"
 
 const app = express()
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://skilldev2-0-8yljymvv3-mdhossain093s-projects.vercel.app",
+]
+
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin(origin, callback) {
+    // Allow same-origin / curl (no Origin header) and explicitly listed origins.
+    // Also allow any Vercel preview deployment (`*.vercel.app`).
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true)
+    }
+    return callback(new Error("Not allowed by CORS"))
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
