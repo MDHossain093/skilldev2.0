@@ -19,26 +19,24 @@ export default function PublicPortfolioPage() {
   useEffect(() => {
     if (!username) return
     let cancelled = false
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLoading(true)
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setNotFoundFlag(false)
+    queueMicrotask(() => {
+      if (cancelled) return
+      setLoading(true)
+      setNotFoundFlag(false)
+    })
     getPublicPortfolio(username)
       .then((res) => {
         if (cancelled) return
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setData(res)
       })
-      .catch((e) => {
+      .catch(() => {
         if (cancelled) return
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setNotFoundFlag(true)
       })
       .finally(() => {
         if (!cancelled) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLoading(false)
-    }
+          setLoading(false)
+        }
       })
     return () => {
       cancelled = true

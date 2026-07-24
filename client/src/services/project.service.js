@@ -1,6 +1,7 @@
 import axios from "axios"
+import { getApiBaseUrl } from "@/lib/env"
 
-const API = "http://localhost:5000/api/projects"
+const API = `${getApiBaseUrl()}/api/projects`
 
 // Pass a userId to get only that user's projects.
 export const getProjects = async (userId) => {

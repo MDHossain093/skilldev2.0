@@ -1,6 +1,7 @@
 import axios from "axios"
+import { getApiBaseUrl } from "@/lib/env"
 
-const API = "http://localhost:5000/api/ai"
+const API = `${getApiBaseUrl()}/api/ai`
 
 export const getProfileAnalysis = async (payload) => {
   const response = await axios.post(`${API}/profile-analysis`, payload)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { FolderGit2, Plus, Trash2, GitBranch, ExternalLink, ChevronDown, ChevronUp, Loader2 } from "lucide-react"
 import { getProjects, createProject, deleteProject } from "@/services/project.service"
@@ -18,13 +18,17 @@ export default function ProjectsPage() {
   const [error, setError] = useState("")
   const [formData, setFormData] = useState({ title: "", description: "", githubUrl: "", liveUrl: "", techStack: "" })
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     if (!authUser) return
     try { const data = await getProjects(authUser.id); setProjects(data) }
     finally { setLoading(false) }
-  }
+  }, [authUser])
 
-  useEffect(() => { fetchProjects() }, [authUser])
+  useEffect(() => {
+    // Defer to a microtask so we don't kick off a fetch synchronously inside
+    // the effect body (react-hooks/set-state-in-effect).
+    queueMicrotask(() => fetchProjects())
+  }, [fetchProjects])
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
 

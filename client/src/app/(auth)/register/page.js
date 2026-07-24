@@ -25,6 +25,7 @@ export default function RegisterPage() {
       await registerUser(formData)
       const data = await loginUser({ email: formData.email, password: formData.password })
       login(data.user, data.token)
+      document.cookie = `token=${data.token}; Path=/; Max-Age=${7 * 24 * 60 * 60}; SameSite=Lax`
       router.push("/dashboard")
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.")

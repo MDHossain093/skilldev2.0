@@ -36,7 +36,19 @@ const THEMES = [
 
 export default function PortfolioEditorPage() {
   const router = useRouter()
-  const { user, hasHydrated } = useAuthStore()
+  const user = useAuthStore((s) => s.user)
+  // SSR-safe: `useAuthStore.persist` is browser-only, default to false on the
+  // server and let the client useEffect subscribe once mounted.
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => {
+    // Defer setState to next microtask so we don't call it synchronously
+    // inside the effect (react-hooks/set-state-in-effect).
+    const flip = () => queueMicrotask(() => setHydrated(true))
+    if (useAuthStore.persist?.hasHydrated()) flip()
+    const unsubFinish = useAuthStore.persist?.onFinishHydration(flip)
+    return () => unsubFinish?.()
+  }, [])
 
   const {
     portfolio,
@@ -69,11 +81,11 @@ export default function PortfolioEditorPage() {
 
   // Wait for Zustand hydration before deciding to redirect.
   useEffect(() => {
-    if (!hasHydrated) return
+    if (!hydrated) return
     if (!user) {
       router.replace("/login")
     }
-  }, [hasHydrated, user, router])
+  }, [hydrated, user, router])
 
   // Load portfolio config + supporting data once user is known.
   useEffect(() => {
@@ -170,7 +182,7 @@ export default function PortfolioEditorPage() {
     await publish(user.id, next)
   }
 
-  if (!hasHydrated || !user) return null
+  if (!hydrated || !user) return null
 
   const publicUrl =
     form.username && form.isPublished

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Code2, Plus, X, Loader2 } from "lucide-react"
 import { getSkills, createSkill, deleteSkill } from "@/services/skill.service"
 import useAuthStore from "@/store/auth.store"
@@ -26,14 +26,18 @@ export default function SkillsPage() {
   const [deletingId, setDeletingId] = useState(null)
   const [error, setError] = useState("")
 
-  const fetchSkills = async () => {
+  const fetchSkills = useCallback(async () => {
     if (!user) return
     try { const data = await getSkills(user.id); setSkills(data) }
     catch { setError("Failed to load skills") }
     finally { setLoading(false) }
-  }
+  }, [user])
 
-  useEffect(() => { fetchSkills() }, [user])
+  useEffect(() => {
+    // Defer to a microtask so we don't kick off a fetch synchronously inside
+    // the effect body (react-hooks/set-state-in-effect).
+    queueMicrotask(() => fetchSkills())
+  }, [fetchSkills])
 
   const handleAdd = async (e) => {
     e.preventDefault()

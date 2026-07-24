@@ -1,6 +1,7 @@
 import axios from "axios"
+import { getApiBaseUrl } from "@/lib/env"
 
-const API = "http://localhost:5000/api/auth"
+const API = `${getApiBaseUrl()}/api/auth`
 
 export const registerUser = async (data) => {
   const response = await axios.post(

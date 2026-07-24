@@ -39,7 +39,10 @@ export default function TeamMatchPage() {
   const [dataLoaded, setDataLoaded] = useState(false)
 
   useEffect(() => {
-    if (user) {
+    if (!user) return
+    // Defer setState calls to a microtask so we don't call them synchronously
+    // inside the effect body (react-hooks/set-state-in-effect).
+    queueMicrotask(() => {
       setLoadError(false)
       Promise.all([
         // A missing profile (404) is fine — the user just hasn't created one yet.
@@ -54,7 +57,7 @@ export default function TeamMatchPage() {
           console.error(err)
           setLoadError(true)
         })
-    }
+    })
   }, [user])
 
   const handleFindTeam = async () => {

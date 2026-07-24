@@ -26,7 +26,7 @@ export default function ProfilePage() {
       getSkills(user.id).then(setSkills),
       getProjects(user.id).then(setProjects),
     ]).finally(() => setLoading(false))
-  }, [user])
+  }, [user, router])
 
   if (!user) return null
 

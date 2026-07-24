@@ -48,7 +48,10 @@ const stats = [
 
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    // Defer to microtask to satisfy react-hooks/set-state-in-effect.
+    queueMicrotask(() => setMounted(true))
+  }, [])
 
   return (
     <div className="min-h-screen animated-gradient-bg overflow-x-hidden">

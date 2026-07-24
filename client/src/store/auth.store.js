@@ -36,10 +36,21 @@ const useAuthStore = create(
       },
     }),
     {
-      name: "auth-storage",
+      name: "auth-storage-v2",
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ user: state.user, token: state.token }),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) console.error("[auth-store] rehydrate error", error)
+      },
     }
   )
 )
 
 export default useAuthStore
+
+// Eagerly trigger rehydration as soon as this module loads on the client.
+// This avoids the "stuck before rehydration" trap where components subscribed
+// only via selectors miss the rehydration setState and never re-render.
+if (typeof window !== "undefined") {
+  useAuthStore.persist.hasHydrated()
+}

@@ -1,6 +1,7 @@
 import axios from "axios"
+import { getApiBaseUrl } from "@/lib/env"
 
-const BASE = "http://localhost:5000/api/portfolio"
+const BASE = `${getApiBaseUrl()}/api/portfolio`
 const creds = { withCredentials: true }
 
 // Owner view — server derives userId from JWT cookie

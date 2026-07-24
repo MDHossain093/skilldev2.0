@@ -24,6 +24,7 @@ export default function LoginPage() {
       setError("")
       const data = await loginUser(formData)
       login(data.user, data.token)
+      document.cookie = `token=${data.token}; Path=/; Max-Age=${7 * 24 * 60 * 60}; SameSite=Lax`
       router.push("/dashboard")
       setTimeout(() => { if (window.location.pathname !== "/dashboard") window.location.href = "/dashboard" }, 300)
     } catch (err) {

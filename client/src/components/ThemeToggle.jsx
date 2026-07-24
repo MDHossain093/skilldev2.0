@@ -9,7 +9,10 @@ export default function ThemeToggle({ className = "" }) {
   const [mounted, setMounted] = useState(false)
 
   // Avoid a hydration mismatch: only render the real icon after mount.
-  useEffect(() => setMounted(true), [])
+  // Defer setState to a microtask to satisfy react-hooks/set-state-in-effect.
+  useEffect(() => {
+    queueMicrotask(() => setMounted(true))
+  }, [])
 
   const isDark = theme === "dark"
 

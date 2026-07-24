@@ -1,6 +1,7 @@
 import axios from "axios"
+import { getApiBaseUrl } from "@/lib/env"
 
-const API = "http://localhost:5000/api/users"
+const API = `${getApiBaseUrl()}/api/users`
 
 export const getUsers = async () => {
   const response = await axios.get(API)

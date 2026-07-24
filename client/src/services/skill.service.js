@@ -1,6 +1,7 @@
 import axios from "axios"
+import { getApiBaseUrl } from "@/lib/env"
 
-const API = "http://localhost:5000/api/skills"
+const API = `${getApiBaseUrl()}/api/skills`
 
 // Pass a userId to get only that user's skills; omit for the full catalog.
 export const getSkills = async (userId) => {
